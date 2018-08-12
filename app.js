@@ -8,7 +8,7 @@ var wechat = require('wechat');
 const app = express();
 
 // 载入配置文件
-var config = require('./config');
+var config = require('./config/config');
 
 app.use(express.query());
 
@@ -28,6 +28,10 @@ app.use('/', wechat(config, function (req, res, next) {
 			//_wxMenuEvent(message,res);
 		}
 	}
+	else if (message.MsgType == 'text')
+	{
+		_wxSubTextMsg(message, res);
+	}
 }));
 
 // 监听端口，等待连接
@@ -42,5 +46,12 @@ console.log(`Server listening at http://127.0.0.1:${port}`);
 function _wxSubscribeEvent(message, res) {
 	var emptyStr = "          ";    
 	var replyStr = "感谢你的关注!";
+	res.reply(replyStr);
+}
+
+//用户输入处理
+function _wxSubTextMsg(message, res) {
+	var emptyStr = "          ";    
+	var replyStr = "你输入的是：" + message.Content;
 	res.reply(replyStr);
 }
