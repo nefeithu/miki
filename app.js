@@ -13,10 +13,21 @@ var config = require('./config');
 app.use(express.query());
 
 app.use('/', wechat(config, function (req, res, next) {
-    res.reply({
-        content: '你好，Hello World!',
-        type: 'text'
-    });
+	var message = req.weixin;
+	console.log(message);
+	if (message.MsgType == 'event')
+	{
+		//关注事件
+		if (message.Event == 'subscribe')
+		{
+			_wxSubscribeEvent(message, res);
+		}
+		//用户自定义菜单事件
+		if (message.Event === 'CLICK')
+		{
+			//_wxMenuEvent(message,res);
+		}
+	}
 }));
 
 // 监听端口，等待连接
@@ -25,3 +36,11 @@ app.listen(port);
 
 // 输出服务器启动日志
 console.log(`Server listening at http://127.0.0.1:${port}`);
+
+
+//关注
+function _wxSubscribeEvent(message, res) {
+	var emptyStr = "          ";    
+	var replyStr = "感谢你的关注!";
+	res.reply(replyStr);
+}
